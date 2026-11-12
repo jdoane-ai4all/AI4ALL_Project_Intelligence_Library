@@ -118,18 +118,9 @@ export default function Constellation({ lib, projects, visible, selected, onSele
     const g = new (ForceGraph3D as any)(el.current, { controlType: "orbit" })
       .showNavInfo(false)
       .nodeId("id")
-      // Links are opaque, with colors pre-mixed against the background (same look as the old 0.35 opacity): opaque
-      // lines draw in the opaque pass, so the slightly translucent nodes always blend over them instead of being
-      // depth-sorted against them (which let links draw on top of nodes).
-      .linkOpacity(1)
+      .linkOpacity(0.35)
       .enableNodeDrag(true)
       .cooldownTicks(120);
-    // brighter, more even light so node colors read at full saturation (default ambient is gray 0xcccccc at PI,
-    // directional 0.6*PI, which dims the shaded side of each sphere)
-    for (const l of g.lights() as { isAmbientLight?: boolean; isDirectionalLight?: boolean; intensity: number; color: { set(c: number): void } }[]) {
-      if (l.isAmbientLight) { l.color.set(0xffffff); l.intensity = 0.9 * Math.PI; }
-      else if (l.isDirectionalLight) l.intensity = 0.45 * Math.PI;
-    }
     graph.current = g;
     (window as unknown as { __atlasGraph?: unknown }).__atlasGraph = g; // exposed for automated UI checks
     const ro = new ResizeObserver(() => g.width(el.current!.clientWidth).height(el.current!.clientHeight));
@@ -141,7 +132,7 @@ export default function Constellation({ lib, projects, visible, selected, onSele
   // 3D library rebuild every sphere, which is what looked like the network resizing on each slider move.
   useEffect(() => {   // static settings + handlers, once
     const g = graph.current; if (!g) return;
-    g.nodeRelSize(3).nodeOpacity(0.85).nodeResolution(14)
+    g.nodeRelSize(3).nodeOpacity(0.92).nodeResolution(14)
       .nodeLabel((n: GNode) => tooltip(n.p))
       .linkDirectionalParticleWidth(1.6)
       .linkLabel((l: GLink) => `<div class="tip"><b>${(l.weight * 100).toFixed(0)}% similar</b><br/>${escapeHtml(l.explanation)}</div>`)
@@ -173,7 +164,7 @@ export default function Constellation({ lib, projects, visible, selected, onSele
     const near = focus ? neighbors.get(focus) ?? new Set() : null;
     const dim = (id: string) => (!visibleIds.has(id)) || (near !== null && id !== focus && !near.has(id));
     g.nodeColor((n: GNode) => {
-      if (dim(n.id)) return theme === "dark" ? "#3a3a3a" : "#d9dedb";
+      if (dim(n.id)) return theme === "dark" ? "rgba(168,193,174,0.16)" : "rgba(94,112,101,0.22)";
       return colorMap.get(colorKey(n.p)) ?? "#888";
     });
   }, [visibleIds, focus, neighbors, colorMap, colorBy, theme]);
@@ -182,8 +173,7 @@ export default function Constellation({ lib, projects, visible, selected, onSele
     const g = graph.current; if (!g) return;
     const touches = (l: GLink) => { const s = (l.source as GNode).id ?? l.source, t = (l.target as GNode).id ?? l.target; return !!focus && (s === focus || t === focus); };
     g.linkWidth((l: GLink) => (hoverLink === l ? 2.5 : 0.25 + 2.2 * Math.max(0, l.weight - 0.3)))
-      .linkColor((l: GLink) => { const bg = theme === "dark" ? "#191919" : "#FFF8F9";
-        return touches(l) ? mix(theme === "dark" ? "#FFB200" : "#930059", 0.45, bg) : mix(theme === "dark" ? "#FFFFFF" : "#32533D", theme === "dark" ? 0.06 : 0.1, bg); })
+      .linkColor((l: GLink) => touches(l) ? (theme === "dark" ? "#FFB200" : "#930059") : (theme === "dark" ? "rgba(172,228,170,0.28)" : "rgba(50,83,61,0.22)"))
       .linkDirectionalParticles((l: GLink) => (touches(l) ? 2 : 0));
   }, [focus, hoverLink, theme]);
 
@@ -276,11 +266,6 @@ export default function Constellation({ lib, projects, visible, selected, onSele
   );
 }
 
-// Opaque equivalent of `fg` drawn at opacity `a` over `bg` (all #RRGGBB).
-function mix(fg: string, a: number, bg: string) {
-  const ch = (h: string, i: number) => parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16);
-  return "#" + [0, 1, 2].map((i) => Math.round(a * ch(fg, i) + (1 - a) * ch(bg, i)).toString(16).padStart(2, "0")).join("");
-}
 function escapeHtml(s: string) { return (s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!)); }
 function tooltip(p: Project) {
   const algs = [...new Set(p.algorithms.filter((a) => a.role === "implemented").map((a) => a.label))].slice(0, 3).join(", ");
