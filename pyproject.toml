@@ -1,0 +1,23 @@
+[project]
+name = "aipil"
+version = "0.1.0"
+description = "AI Project Intelligence Library: evidence-grounded research database of student AI/ML projects"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2", "openpyxl>=3.1", "pydantic>=2.6", "pyyaml>=6", "scikit-learn>=1.4",
+  "networkx>=3.2", "numpy>=1.26", "pdfplumber>=0.11", "requests>=2.31", "pymupdf>=1.24",
+]
+[project.optional-dependencies]
+embeddings = ["sentence-transformers>=3.0"]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

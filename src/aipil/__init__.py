@@ -1,0 +1,3 @@
+"""AI Project Intelligence Library."""
+SCHEMA_VERSION = "1.0.0"
+PIPELINE_VERSION = "0.1.0"

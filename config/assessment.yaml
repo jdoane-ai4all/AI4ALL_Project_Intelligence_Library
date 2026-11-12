@@ -1,0 +1,109 @@
+# Assessment framework v1.0.0. These constructs are independent of the original rubric.
+# Component ratings are produced per project WITH a written justification grounded in the
+# source; composites/tiers/bands are computed deterministically in
+# src/aipil/classification/assess.py so the arithmetic is transparent and reproducible.
+version: "1.2.0"
+# 1.2.0: Python prerequisite graded by explicit observable criteria (python_level), computed in code.
+# 1.1.0: anchor clarifications from the 15-project pilot (see docs/methodology.md#pilot)
+
+sophistication:
+  description: Technical sophistication DEMONSTRATED in the original project (not what was proposed).
+  scale: "0-3 per component"
+  components:
+    algorithmic_complexity:
+      0: Descriptive statistics, rules, or a single off-the-shelf call with no modeling choices.
+      1: Classical models with default settings (linear/logistic regression, a decision tree, k-means).
+      2: Ensembles/boosting (including random forest), kernel methods, pretrained deep models used as-is, or several classical models compared.
+      3: Custom or fine-tuned deep architectures, sequence/generative models, multi-stage hybrid systems.
+    data_processing:
+      0: Data used essentially as downloaded.
+      1: Basic cleaning (missing values, encoding, scaling).
+      2: Substantive feature engineering (incl. rolling/lag features), data merging, standard augmentation (flips/rotations), or text/image preprocessing pipelines.
+      3: Complex pipelines - fusion of 3+ sources, custom label construction, synthetic data generation, or several substantive stages combined.
+    methodological_breadth:
+      0: One method, no comparison.
+      1: Two methods or a simple baseline comparison.
+      2: Systematic comparison of 3+ approaches, or two integrated components.
+      3: Several integrated components (e.g. clustering feeding a classifier, retrieval + generation, detection + tracking).
+    validation_rigor:
+      0: No evaluation reported, or a split described but no results reported.
+      1: Single accuracy-type metric on a hold-out split.
+      2: Multiple appropriate metrics, confusion matrix, attention to imbalance/leakage, a structured user study, or a test-question evaluation of an LLM/RAG system.
+      3: At least TWO of - cross-validation or time-aware validation; hyperparameter tuning; error/robustness analysis; interpretability used to check model behaviour (not only for a demo).
+    engineering:
+      0: Notebook analysis only (charts/plots alone count as 0).
+      1: Reusable script/module or a static dashboard/report artifact.
+      2: Working interactive demo/app (e.g. Streamlit) or API integration.
+      3: Multi-service system, deployment, real-time pipeline, or substantial software engineering.
+    mathematical_depth:
+      0: No mathematical content beyond metrics.
+      1: Explains model intuition correctly.
+      2: Engages with loss functions, probability, statistical assumptions, or algorithm internals.
+      3: Derives or implements non-trivial mathematical/statistical machinery.
+  composite: "mean(components) / 3 * 10, rounded to 1 decimal (0-10)"
+
+prerequisites:
+  description: Background a NEW student would need to build a comparable project.
+  scale: "1 basic, 2 moderate, 3 substantial"
+  components:
+    python: {1: Notebook-level pandas/sklearn, 2: Multi-file code, APIs, custom functions, 3: Frameworks, training loops, app/back-end engineering}
+    math_stats: {1: Means, percentages, basic metrics, 2: Probability, distributions, linear algebra intuition, 3: Calculus/optimization, advanced statistics}
+    ml: {1: Train/test split and one classical model, 2: Model selection, tuning, ensembles, or USING pretrained/hosted models (inference, prompting, embeddings, RAG), 3: TRAINING or fine-tuning deep, sequence or generative models}
+    domain: {1: Everyday knowledge, 2: Some domain reading required, 3: Specialized expertise (clinical, financial, engineering)}
+  hardware: [laptop_cpu, free_cloud_gpu, dedicated_gpu, unknown]  # MINIMUM needed to reproduce a comparable version
+
+python_level:
+  description: >
+    Python background needed for a comparable project, graded against observable evidence in the extraction
+    (tags/algorithms with confirmed or inferred evidence, and anchored component scores). Highest level whose
+    criteria are met. Replaces the free LLM rating, which is kept as `python_llm` for comparison.
+  levels:
+    3:
+      label: Substantial — builds software beyond a notebook
+      any_of:
+        trains_deep_model: "Trains or fine-tunes a deep neural network (level-3 neural/transformer/generative model run, plus a DL framework or fine-tuning)"
+        system_engineering: "Engineering component = 3 (multi-service system, deployment, real-time pipeline)"
+        backend_stack: "Two or more of: Flask, FastAPI, Docker, JavaScript front-end, vector database, LangChain"
+        reinforcement_learning: "Implements reinforcement learning"
+    2:
+      label: Moderate — multi-step programming beyond library defaults
+      any_of:
+        interactive_app: "Builds an interactive app or API (Streamlit, Gradio, Flask, FastAPI, or engineering >= 2, or deployment)"
+        external_data_access: "Calls external APIs or scrapes the web (incl. hosted LLM APIs, market-data APIs)"
+        pretrained_models: "Runs pretrained deep models / LLMs / embedding models through libraries"
+        multi_source_pipeline: "Fuses multiple data sources with substantive processing (data_processing >= 2)"
+        custom_pipeline: "Multi-component pipeline (methodological_breadth >= 2 and data_processing >= 2)"
+    1:
+      label: Basic — notebook-level pandas / scikit-learn
+      any_of: {default: "None of the level-2 or level-3 criteria are met"}
+
+difficulty_tier:
+  description: Student-friendly tier derived from prerequisites and the highest algorithm level implemented.
+  rules: |
+    max_prereq = max(python, math_stats, ml)
+    alg_level = max(level of algorithms with role implemented/baseline), default 1
+    Advanced     if ml == 3 or alg_level == 3 and ml >= 2 or max_prereq == 3 and sum(python, math_stats, ml) >= 7
+    Beginner     if max_prereq <= 1 or (sum(python, math_stats, ml) <= 4 and alg_level <= 1)
+    Intermediate otherwise
+
+reproduction_effort:
+  description: Effort for another student to reproduce a COMPARABLE version. Higher = more effort.
+  scale: "0-3 per component"
+  components:
+    data_access: {0: Clean public dataset (a free Kaggle/UCI/portal account counts as 0), 1: Needs an API key, application, or light assembly of 2 files, 2: Multiple sources to assemble or scrape, 3: Private, custom-collected, or unidentified data}
+    data_preparation: {0: Ready to model, 1: Routine cleaning, 2: Substantial feature engineering or labeling, 3: Major collection/annotation effort}
+    implementation: {0: A few library calls, 1: Standard notebook pipeline, 2: Several components or custom code, 3: Complex system or custom architecture}
+    compute: {0: Laptop seconds-minutes, 1: Laptop longer runs, 2: Free cloud GPU needed, 3: Dedicated GPU / paid API at scale}
+    dependencies: {0: Standard scientific Python, 1: A few extra libraries, 2: Deep learning frameworks or external APIs, 3: Many services/keys/version-sensitive stacks}
+  bands:
+    # Hour estimates are calibrated to the program calendar (13 weeks; ~9 working weeks across proposal and build).
+    - {max: 3, label: Low, estimate: "about 10-15 hours of work", hours: 12}
+    - {max: 7, label: Moderate, estimate: "about 20-30 hours of work", hours: 25}
+    - {max: 11, label: High, estimate: "about 40-50 hours of work", hours: 45}
+    - {max: 15, label: Very high, estimate: "60+ hours, or a team", hours: 70}
+
+adoption_readiness:
+  description: Is this a good starting point for a new student? Count of satisfied criteria (0-7).
+  criteria: [dataset_accessible, problem_clear, methods_identifiable, prerequisites_manageable,
+             reproducibility_plausible, instructions_constructible, limitations_understood]
+  bands: {0: Not ready, 3: Needs work, 5: Good starting point, 7: Excellent starting point}

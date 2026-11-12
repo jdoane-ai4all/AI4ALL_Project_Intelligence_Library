@@ -1,0 +1,8 @@
+# Similarity engine configuration (v1.0.0). See src/aipil/embeddings/similarity.py.
+version: "1.0.0"
+semantic_model: sentence-transformers/all-MiniLM-L6-v2   # falls back to TF-IDF+LSA if unavailable
+k: {default: 4, overall: 5, semantic: 5, dataset: 3}
+threshold: {default: 0.35, semantic: 0.45, overall: 0.3, dataset: 0.5, skills: 0.8}
+overall_weights: {semantic: 0.35, technical: 0.2, algorithm: 0.2, industry: 0.15, dataset: 0.05, skills: 0.05}
+cluster_weights: {semantic: 0.4, technical: 0.2, algorithm: 0.2, industry: 0.2}
+clusters: {kmin: 6, kmax: 14}

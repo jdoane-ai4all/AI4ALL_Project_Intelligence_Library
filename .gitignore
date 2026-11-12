@@ -1,0 +1,27 @@
+# --- Private data: never commit ---
+data/private/
+data/processed/
+*.xlsx
+*.xls
+*.pdf
+*.sqlite
+*.db
+*.duckdb
+*.parquet
+app/public/data/
+.env
+.env.*
+secrets/
+credentials*.json
+token*.json
+# --- Tooling ---
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+node_modules/
+app/dist/
+.DS_Store
+app/tsconfig.tsbuildinfo
+app/dist-single/

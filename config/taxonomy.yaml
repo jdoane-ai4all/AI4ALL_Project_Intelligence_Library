@@ -1,0 +1,392 @@
+# AI Project Intelligence Library taxonomy.
+# Versioned, multi-label, extensible. Each term: slug -> {label, synonyms?, parent?, ...attributes}.
+# Extractors must use these slugs; unknown terms are logged to the review queue as proposals
+# (prefix "new:") instead of being silently forced into an ill-fitting category.
+version: "1.2.0"
+# 1.2.0: consolidation of provisional terms proposed during full extraction (aliases section).
+# 1.1.0: pilot-driven additions (custom labeling, feature selection, threshold tuning, grouped split,
+#        optuna/monai/fairlearn/catboost tools, CNN-RNN hybrids, international development).
+
+dimensions:
+  industry:
+    description: Hierarchical, multi-label application industry. Parent terms are top-level sectors.
+    terms:
+      healthcare: {label: Healthcare & Life Sciences}
+      healthcare.diagnostics: {label: Diagnosis & Screening, parent: healthcare}
+      healthcare.medical_imaging: {label: Medical Imaging, parent: healthcare}
+      healthcare.mental_health: {label: Mental Health, parent: healthcare}
+      healthcare.public_health: {label: Public Health & Epidemiology, parent: healthcare}
+      healthcare.pharma: {label: Drugs & Pharmacology, parent: healthcare}
+      healthcare.genomics: {label: Genomics & Bioinformatics, parent: healthcare}
+      healthcare.clinical_ops: {label: Clinical Operations & Care Delivery, parent: healthcare}
+      healthcare.veterinary: {label: Animal & Veterinary Health, parent: healthcare}
+      healthcare.fitness_nutrition: {label: Fitness, Nutrition & Wellness, parent: healthcare}
+      finance: {label: Finance & Business}
+      finance.markets: {label: Markets, Trading & Crypto, parent: finance}
+      finance.credit_risk: {label: Credit, Lending & Risk, parent: finance}
+      finance.fraud: {label: Fraud Detection, parent: finance}
+      finance.personal_finance: {label: Personal Finance, parent: finance}
+      finance.business_ops: {label: Business Operations & Analytics, parent: finance}
+      finance.real_estate: {label: Real Estate & Housing, parent: finance}
+      finance.labor: {label: Employment & Labor Markets, parent: finance}
+      manufacturing: {label: Manufacturing & Infrastructure}
+      manufacturing.quality_control: {label: Quality Control & Defect Detection, parent: manufacturing}
+      manufacturing.predictive_maintenance: {label: Predictive Maintenance, parent: manufacturing}
+      manufacturing.civil_infrastructure: {label: Civil Infrastructure, parent: manufacturing}
+      manufacturing.supply_chain: {label: Supply Chain & Logistics, parent: manufacturing}
+      technology: {label: Technology & Engineering}
+      technology.software: {label: Software & Developer Tools, parent: technology}
+      technology.ai_tools: {label: AI Assistants & LLM Applications, parent: technology}
+      technology.robotics: {label: Robotics & Autonomous Systems, parent: technology}
+      technology.space: {label: Space & Astronomy, parent: technology}
+      technology.cloud_it: {label: Cloud & IT Operations, parent: technology}
+      cybersecurity: {label: Cybersecurity}
+      cybersecurity.phishing_spam: {label: Phishing, Spam & Scams, parent: cybersecurity}
+      cybersecurity.network_security: {label: Network & System Security, parent: cybersecurity}
+      cybersecurity.misinformation: {label: Misinformation & Content Integrity, parent: cybersecurity}
+      education: {label: Education}
+      agriculture: {label: Agriculture & Food}
+      environment: {label: Environmental Science & Climate}
+      environment.disasters: {label: Natural Hazards & Disasters, parent: environment}
+      environment.climate_weather: {label: Climate & Weather, parent: environment}
+      environment.ecology: {label: Ecology & Biodiversity, parent: environment}
+      environment.pollution: {label: Air, Water & Pollution, parent: environment}
+      energy: {label: Energy}
+      transportation: {label: Transportation & Mobility}
+      entertainment: {label: Entertainment & Media}
+      entertainment.music: {label: Music & Audio, parent: entertainment}
+      entertainment.film_tv: {label: Film, TV & Streaming, parent: entertainment}
+      entertainment.games: {label: Games & Esports, parent: entertainment}
+      entertainment.social_media: {label: Social Media & Online Content, parent: entertainment}
+      entertainment.books_news: {label: Books, News & Publishing, parent: entertainment}
+      sports: {label: Sports}
+      retail: {label: Retail & E-commerce}
+      public_services: {label: Public Services & Government}
+      public_services.justice: {label: Justice & Public Safety, parent: public_services}
+      public_services.civic: {label: Civic & Social Services, parent: public_services}
+      accessibility: {label: Accessibility & Assistive Technology}
+      social_good: {label: Social Equity & Fairness}
+      travel_hospitality: {label: Travel, Food Service & Hospitality}
+      legal: {label: Legal}
+      cultural_heritage: {label: Archaeology & Cultural Heritage}
+      international_development: {label: International Development & Humanitarian}
+
+  paradigm:
+    description: Learning paradigm actually used (not merely discussed).
+    terms:
+      supervised: {label: Supervised learning}
+      unsupervised: {label: Unsupervised learning}
+      semi_supervised: {label: Semi-supervised learning}
+      self_supervised: {label: Self-supervised learning}
+      reinforcement: {label: Reinforcement learning}
+      deep_learning: {label: Deep learning}
+      generative_ai: {label: Generative AI}
+      transfer_learning: {label: Transfer learning / pretrained models}
+      active_learning: {label: Active learning}
+      hybrid: {label: Hybrid ML + rules/statistics}
+      statistical_rule_based: {label: Non-ML statistical or rule-based, description: "Includes classical statistical time-series models (ARIMA, exponential smoothing) and simulation; sklearn-style regression/classification is 'supervised'."}
+
+  task:
+    description: ML problem / task types.
+    terms:
+      classification: {label: Classification}
+      binary_classification: {label: Binary classification, parent: classification}
+      multiclass_classification: {label: Multi-class classification, parent: classification}
+      multilabel_classification: {label: Multi-label classification, parent: classification}
+      regression: {label: Regression}
+      clustering: {label: Clustering}
+      forecasting: {label: Forecasting}
+      time_series_modeling: {label: Time-series modeling}
+      anomaly_detection: {label: Anomaly detection}
+      object_detection: {label: Object detection}
+      image_classification: {label: Image classification}
+      image_segmentation: {label: Image segmentation}
+      pose_estimation: {label: Pose / keypoint estimation}
+      ocr: {label: Optical character recognition}
+      recommendation: {label: Recommendation}
+      ranking: {label: Ranking}
+      optimization: {label: Optimization}
+      information_retrieval: {label: Information retrieval / semantic search}
+      question_answering: {label: Question answering / conversational}
+      text_generation: {label: Natural language generation}
+      summarization: {label: Summarization}
+      text_classification: {label: Text classification}
+      sentiment_analysis: {label: Sentiment / emotion analysis}
+      named_entity_recognition: {label: Named entity recognition}
+      topic_modeling: {label: Topic modeling}
+      speech_recognition: {label: Speech recognition / audio transcription}
+      audio_classification: {label: Audio classification}
+      image_generation: {label: Image / media generation}
+      predictive_maintenance: {label: Predictive maintenance}
+      risk_scoring: {label: Risk scoring}
+      survival_analysis: {label: Survival / time-to-event analysis}
+      dimensionality_reduction: {label: Dimensionality reduction}
+      simulation: {label: Simulation}
+      causal_inference: {label: Causal / explanatory analysis}
+      geospatial_analysis: {label: Geospatial analysis}
+      data_analysis: {label: Exploratory data analysis}
+      speech_synthesis: {label: Speech synthesis (text-to-speech)}
+
+  modality:
+    description: Data modality / structure of model inputs.
+    terms:
+      tabular: {label: Tabular}
+      text: {label: Text}
+      image: {label: Image}
+      video: {label: Video}
+      audio: {label: Audio}
+      time_series: {label: Time series}
+      geospatial: {label: Geospatial / remote sensing}
+      graph: {label: Graph / network}
+      sensor: {label: Sensor / IoT}
+      multimodal: {label: Multimodal}
+      genomic: {label: Genomic / biological sequence}
+      structured_grid: {label: Structured grid / board state}
+
+  method:
+    description: Techniques demonstrated in the pipeline.
+    terms:
+      feature_engineering: {label: Feature engineering}
+      data_cleaning: {label: Data cleaning & preprocessing}
+      data_augmentation: {label: Data augmentation}
+      class_imbalance_handling: {label: Class-imbalance handling (SMOTE, weighting, resampling)}
+      hyperparameter_tuning: {label: Hyperparameter tuning}
+      cross_validation: {label: Cross-validation}
+      train_test_split: {label: Hold-out train/test evaluation}
+      time_based_split: {label: Time-aware validation split}
+      interpretability: {label: Interpretability / explainability (SHAP, LIME, Grad-CAM, importances)}
+      fine_tuning: {label: Fine-tuning pretrained models}
+      prompt_engineering: {label: Prompt engineering}
+      retrieval_augmentation: {label: Retrieval-augmented generation}
+      embeddings: {label: Vector embeddings}
+      text_vectorization: {label: Text vectorization (TF-IDF, bag-of-words)}
+      dimensionality_reduction: {label: Dimensionality reduction (PCA, t-SNE, UMAP)}
+      ensembling: {label: Ensembling / stacking}
+      model_comparison: {label: Systematic model comparison}
+      fairness_analysis: {label: Bias / fairness analysis}
+      error_analysis: {label: Error analysis}
+      web_scraping: {label: Web scraping / data collection}
+      api_integration: {label: External API integration}
+      data_fusion: {label: Combining multiple data sources}
+      deployment: {label: Model deployment / interactive app}
+      monte_carlo: {label: Monte Carlo simulation}
+      statistical_testing: {label: Statistical testing}
+      custom_labeling: {label: Custom target labeling (e.g. triple-barrier, rule-derived labels)}
+      feature_selection: {label: Feature selection}
+      threshold_tuning: {label: Decision-threshold tuning / calibration}
+      group_split: {label: Grouped / leakage-aware split}
+      synthetic_data_generation: {label: Synthetic data generation}
+      custom_data_collection: {label: Custom data collection / annotation}
+      metric_learning: {label: Metric learning (e.g. triplet loss)}
+      custom_loss: {label: Custom / task-specific loss function}
+      procedural_generation: {label: Procedural content generation}
+      human_evaluation: {label: User study / human evaluation}
+      output_verification: {label: LLM output verification / hallucination checking}
+
+  tool:
+    description: Languages, libraries and platforms.
+    terms:
+      python: {label: Python}
+      r: {label: R}
+      sql: {label: SQL}
+      javascript: {label: JavaScript / TypeScript}
+      pandas: {label: pandas}
+      numpy: {label: NumPy}
+      scikit_learn: {label: scikit-learn, synonyms: [sklearn]}
+      xgboost_lib: {label: XGBoost library}
+      lightgbm_lib: {label: LightGBM library}
+      pytorch: {label: PyTorch}
+      tensorflow: {label: TensorFlow}
+      keras: {label: Keras}
+      huggingface: {label: Hugging Face}
+      opencv: {label: OpenCV}
+      ultralytics: {label: Ultralytics}
+      nltk: {label: NLTK}
+      spacy: {label: spaCy}
+      langchain: {label: LangChain}
+      llm_api: {label: Hosted LLM API (OpenAI/Gemini/Claude etc.)}
+      shap_lib: {label: SHAP}
+      streamlit: {label: Streamlit}
+      gradio: {label: Gradio}
+      flask: {label: Flask}
+      fastapi: {label: FastAPI}
+      matplotlib: {label: Matplotlib / Seaborn}
+      plotly: {label: Plotly}
+      jupyter: {label: Jupyter / Colab}
+      tableau: {label: Tableau / Power BI}
+      vector_db: {label: Vector database (FAISS, Chroma, Pinecone)}
+      mediapipe: {label: MediaPipe}
+      catboost_lib: {label: CatBoost library}
+      optuna: {label: Optuna}
+      monai: {label: MONAI}
+      fairlearn: {label: Fairlearn}
+      albumentations: {label: Albumentations}
+      docker: {label: Docker}
+      docling: {label: Docling}
+      imbalanced_learn: {label: imbalanced-learn}
+      liblouis: {label: liblouis}
+      librosa: {label: librosa}
+      nrclex: {label: NRCLex}
+      opensmile: {label: openSMILE}
+      playwright: {label: Playwright}
+      rasterio: {label: Rasterio}
+      roboflow: {label: Roboflow}
+      sdv: {label: SDV (Synthetic Data Vault)}
+      textblob: {label: TextBlob}
+      yfinance: {label: yfinance}
+      google_earth_engine: {label: Google Earth Engine}
+
+  algorithm:
+    description: >
+      Specific algorithms/models. Attributes: family, level (1 beginner-friendly, 2 intermediate,
+      3 advanced), paradigm hint. Original student terminology is retained per project.
+    terms:
+      linear_regression: {label: Linear regression, family: linear, level: 1, synonyms: [ols, multiple linear regression]}
+      regularized_regression: {label: Ridge / Lasso / ElasticNet, family: linear, level: 1, synonyms: [ridge, lasso, elastic net]}
+      polynomial_regression: {label: Polynomial regression, family: linear, level: 1}
+      logistic_regression: {label: Logistic regression, family: linear, level: 1}
+      naive_bayes: {label: Naive Bayes, family: probabilistic, level: 1, synonyms: [multinomial nb, gaussian nb]}
+      knn: {label: k-nearest neighbors, family: instance_based, level: 1, synonyms: [k-nearest neighbors, knn]}
+      decision_tree: {label: Decision tree, family: tree, level: 1, synonyms: [cart]}
+      random_forest: {label: Random forest, family: tree_ensemble, level: 1, synonyms: [random forest classifier, random forest regressor, rf]}
+      extra_trees: {label: Extra trees, family: tree_ensemble, level: 2}
+      gradient_boosting: {label: Gradient boosting (sklearn/generic), family: tree_ensemble, level: 2, synonyms: [gbm, gradient boosted trees, histgradientboosting]}
+      xgboost: {label: XGBoost, family: tree_ensemble, level: 2}
+      lightgbm: {label: LightGBM, family: tree_ensemble, level: 2}
+      catboost: {label: CatBoost, family: tree_ensemble, level: 2}
+      adaboost: {label: AdaBoost, family: tree_ensemble, level: 2}
+      isolation_forest: {label: Isolation forest, family: anomaly, level: 2}
+      svm: {label: Support vector machine, family: kernel, level: 2, synonyms: [svc, svr, support vector machine]}
+      kmeans: {label: K-means, family: clustering, level: 1, synonyms: [k-means clustering]}
+      dbscan: {label: DBSCAN, family: clustering, level: 2}
+      hierarchical_clustering: {label: Hierarchical clustering, family: clustering, level: 2}
+      gaussian_mixture: {label: Gaussian mixture model, family: clustering, level: 2}
+      pca: {label: Principal component analysis, family: dimensionality_reduction, level: 2}
+      tsne_umap: {label: t-SNE / UMAP, family: dimensionality_reduction, level: 2}
+      mlp: {label: Multilayer perceptron / feed-forward NN, family: neural, level: 2, synonyms: [neural network, ann, dense network]}
+      cnn: {label: Convolutional neural network (custom), family: neural_vision, level: 3}
+      resnet: {label: ResNet, family: neural_vision, level: 3}
+      efficientnet: {label: EfficientNet, family: neural_vision, level: 3}
+      mobilenet: {label: MobileNet, family: neural_vision, level: 3}
+      vgg: {label: VGG, family: neural_vision, level: 3}
+      densenet: {label: DenseNet, family: neural_vision, level: 3}
+      vision_transformer: {label: Vision Transformer, family: neural_vision, level: 3, synonyms: [vit]}
+      yolo: {label: YOLO, family: neural_vision, level: 3}
+      unet: {label: U-Net, family: neural_vision, level: 3}
+      clip: {label: CLIP, family: multimodal, level: 3}
+      cnn_rnn_hybrid: {label: CNN-RNN hybrid (e.g. CRNN, CNN-LSTM), family: neural_sequence, level: 3}
+      rnn: {label: Recurrent neural network, family: neural_sequence, level: 3}
+      lstm: {label: LSTM, family: neural_sequence, level: 3}
+      gru: {label: GRU, family: neural_sequence, level: 3}
+      transformer: {label: Transformer (custom/generic), family: transformer, level: 3}
+      bert: {label: BERT-family encoder, family: transformer, level: 3, synonyms: [distilbert, roberta, finbert, biobert, clinicalbert]}
+      sentence_transformer: {label: Sentence-transformer embedding model, family: transformer, level: 2}
+      llm: {label: Large language model (generative), family: transformer, level: 2, synonyms: [gpt, gemini, claude, llama]}
+      gan: {label: Generative adversarial network, family: generative, level: 3}
+      autoencoder: {label: Autoencoder / VAE, family: generative, level: 3}
+      diffusion: {label: Diffusion model, family: generative, level: 3}
+      gnn: {label: Graph neural network, family: graph, level: 3}
+      arima: {label: ARIMA / SARIMA, family: time_series, level: 2}
+      prophet: {label: Prophet, family: time_series, level: 2}
+      exponential_smoothing: {label: Exponential smoothing, family: time_series, level: 2}
+      survival_models: {label: Survival models (Cox, Kaplan-Meier), family: statistical, level: 2}
+      monte_carlo: {label: Monte Carlo simulation, family: statistical, level: 2}
+      markov_model: {label: Markov / hidden Markov model, family: probabilistic, level: 2}
+      bayesian_model: {label: Bayesian model, family: probabilistic, level: 2}
+      collaborative_filtering: {label: Collaborative filtering / matrix factorization, family: recommender, level: 2}
+      cosine_similarity_retrieval: {label: Similarity search (cosine / nearest-neighbor retrieval), family: retrieval, level: 1}
+      tfidf_model: {label: TF-IDF + linear model pipeline, family: linear, level: 1}
+      lexicon_sentiment: {label: Lexicon sentiment (VADER/TextBlob), family: rule_based, level: 1, synonyms: [vader, textblob]}
+      q_learning: {label: Q-learning / deep RL, family: reinforcement, level: 3}
+      stacking_ensemble: {label: Stacking / voting ensemble, family: ensemble, level: 2}
+      speech_model: {label: Speech model (e.g. Whisper), family: transformer, level: 2}
+      rule_based: {label: Rule-based / heuristic scoring, family: rule_based, level: 1}
+      pose_model: {label: Pose estimation model (MediaPipe/OpenPose), family: neural_vision, level: 2}
+      ocr_model: {label: OCR engine (Tesseract etc.), family: neural_vision, level: 2}
+      faster_rcnn: {label: Faster R-CNN, family: neural_vision, level: 3}
+      retinanet: {label: RetinaNet, family: neural_vision, level: 3}
+      efficientdet: {label: EfficientDet, family: neural_vision, level: 3}
+      face_detection: {label: Face detector (Haar cascade / pretrained), family: neural_vision, level: 2}
+      depth_estimation: {label: Monocular depth estimation model, family: neural_vision, level: 3}
+      cnn_transformer_hybrid: {label: CNN-Transformer hybrid, family: neural_vision, level: 3}
+      multimodal_fusion: {label: Multimodal fusion network, family: multimodal, level: 3}
+      tabnet: {label: TabNet, family: neural, level: 3}
+      tcn: {label: Temporal convolutional network, family: neural_sequence, level: 3}
+      n_beats: {label: N-BEATS, family: neural_sequence, level: 3}
+      ts_foundation_model: {label: Time-series foundation model (e.g. TimesFM), family: time_series, level: 2}
+      persistent_homology: {label: Persistent homology (topological data analysis), family: statistical, level: 3}
+      physics_model: {label: Physics-based model, family: rule_based, level: 2}
+      spline_regression: {label: Spline / GAM regression, family: linear, level: 2}
+      mean_variance_optimization: {label: Mean-variance portfolio optimization, family: optimization, level: 2}
+      bm25: {label: BM25 retrieval, family: retrieval, level: 1}
+      lsa: {label: Latent semantic analysis, family: dimensionality_reduction, level: 2}
+      statistical_test: {label: Statistical hypothesis test (chi-square, KS, ...), family: statistical, level: 1}
+      naive_baseline: {label: Naive / mean baseline, family: baseline, level: 1}
+      unspecified: {label: Unspecified model (not named in source), family: unspecified, level: 2}
+
+# Deterministic normalization of provisional terms proposed by extractors ("new:<slug>").
+# Keys: "<dimension>:new:<slug>"; values: canonical term id. Raw extraction artifacts are not edited.
+aliases:
+  "algorithm:new:smote": "method:class_imbalance_handling"
+  "algorithm:new:advanced_imputation": "method:data_cleaning"
+  "algorithm:new:clustering_generic": "algorithm:unspecified"
+  "algorithm:new:deep_learning_generic": "algorithm:unspecified"
+  "algorithm:new:nonlinear_model_unspecified": "algorithm:unspecified"
+  "algorithm:new:temporal_sequence_model_unspecified": "algorithm:unspecified"
+  "algorithm:new:time_series_model_unspecified": "algorithm:unspecified"
+  "algorithm:new:unspecified_text_classifier": "algorithm:unspecified"
+  "algorithm:new:residual_mlp": "algorithm:mlp"
+  "algorithm:new:haar_cascade_face_detector": "algorithm:face_detection"
+  "algorithm:new:face_detector": "algorithm:face_detection"
+  "algorithm:new:depth_estimation_model": "algorithm:depth_estimation"
+  "algorithm:new:multimodal_fusion_network": "algorithm:multimodal_fusion"
+  "algorithm:new:temporal_convolutional_network": "algorithm:tcn"
+  "algorithm:new:time_series_foundation_model": "algorithm:ts_foundation_model"
+  "algorithm:new:latent_semantic_analysis": "algorithm:lsa"
+  "algorithm:new:chi_square_test": "algorithm:statistical_test"
+  "algorithm:new:ks_drift_test": "algorithm:statistical_test"
+  "algorithm:new:mean_baseline": "algorithm:naive_baseline"
+  "algorithm:new:efficientdet": "algorithm:efficientdet"
+  "algorithm:new:faster_rcnn": "algorithm:faster_rcnn"
+  "algorithm:new:retinanet": "algorithm:retinanet"
+  "algorithm:new:cnn_transformer_hybrid": "algorithm:cnn_transformer_hybrid"
+  "algorithm:new:tabnet": "algorithm:tabnet"
+  "algorithm:new:n_beats": "algorithm:n_beats"
+  "algorithm:new:persistent_homology": "algorithm:persistent_homology"
+  "algorithm:new:physics_model": "algorithm:physics_model"
+  "algorithm:new:spline_regression": "algorithm:spline_regression"
+  "algorithm:new:mean_variance_optimization": "algorithm:mean_variance_optimization"
+  "algorithm:new:bm25": "algorithm:bm25"
+  "industry:new:veterinary_pet_care": "industry:healthcare.veterinary"
+  "industry:new:technology.cloud_it_operations": "industry:technology.cloud_it"
+  "modality:new:tile_grid": "modality:structured_grid"
+  "task:new:speech_synthesis": "task:speech_synthesis"
+  "method:new:synthetic_data_generation": "method:synthetic_data_generation"
+  "method:new:custom_data_collection": "method:custom_data_collection"
+  "method:new:metric_learning_triplet_loss": "method:metric_learning"
+  "method:new:ordinal_loss": "method:custom_loss"
+  "method:new:disparity_decomposition": "method:fairness_analysis"
+  "method:new:procedural_content_generation": "method:procedural_generation"
+  "method:new:triple_barrier_labeling": "method:custom_labeling"
+  "method:new:decision_threshold_tuning": "method:threshold_tuning"
+  "method:new:llm_output_verification": "method:output_verification"
+  "method:new:user_study": "method:human_evaluation"
+  "tool:new:albumentations": "tool:albumentations"
+  "tool:new:docker": "tool:docker"
+  "tool:new:docling": "tool:docling"
+  "tool:new:imbalanced_learn": "tool:imbalanced_learn"
+  "tool:new:liblouis": "tool:liblouis"
+  "tool:new:librosa": "tool:librosa"
+  "tool:new:nrclex": "tool:nrclex"
+  "tool:new:opensmile": "tool:opensmile"
+  "tool:new:playwright": "tool:playwright"
+  "tool:new:rasterio": "tool:rasterio"
+  "tool:new:roboflow": "tool:roboflow"
+  "tool:new:sdv": "tool:sdv"
+  "tool:new:textblob": "tool:textblob"
+  "tool:new:yfinance": "tool:yfinance"
+  "tool:new:google_earth_engine": "tool:google_earth_engine"
+  "industry:new:archaeology_cultural_heritage": "industry:cultural_heritage"
+  "tool:new:monai": "tool:monai"
+  "tool:new:optuna": "tool:optuna"
+  "tool:new:fairlearn": "tool:fairlearn"
