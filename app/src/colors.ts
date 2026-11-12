@@ -3,8 +3,9 @@
 // checks (lightness band, chroma floor, adjacent colorblind separation, normal-vision floor) against their surface.
 export type Theme = "dark" | "light";
 const PALETTES: Record<Theme, string[]> = {
-  // Forest surface #13221A: all >= 3:1 contrast
-  dark: ["#bd4a84", "#a17003", "#60a563", "#1187ee", "#c74955", "#33a6a0", "#966cd7"],
+  // Charcoal surface #191919: same hue order at higher chroma (OKLCH C<=0.2, L 0.58-0.67); passes lightness band,
+  // chroma floor, adjacent CVD separation (worst deutan dE 8.5), normal-vision floor and >= 3:1 contrast
+  dark: ["#dd4796", "#a17000", "#20b339", "#008af6", "#e13d53", "#00a8a2", "#a167f1"],
   // white/Miami surface: sunshine, teal and blue sit below 3:1, so the legend always labels them
   light: ["#9f366c", "#de9d16", "#226929", "#08b6af", "#663e9e", "#70aff4", "#b5414d"],
 };

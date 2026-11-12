@@ -256,7 +256,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
    Palette: Plum #930059 · Sunshine #FFB200 · Forest #32533D · Coral #FF0054 · Miami #FFDDE2 · Mint #ACE4AA
    Type: Miriam Libre (headings, labels, eyebrows), Crimson Text (body). Dark = Forest, light = white/Miami. */
 :root, :root[data-theme="dark"] {
-  --bg: #13221A; --panel: #1B2F23; --panel-2: #24402F; --line: #35563F; --text: #F3FAF2; --muted: #A8C1AE;
+  --bg: #191919; --panel: #1B2F23; --panel-2: #24402F; --line: #35563F; --text: #F3FAF2; --muted: #A8C1AE;
   --accent: #ACE4AA; --on-accent: #13221A; --accent-2: #FFB200; --good: #ACE4AA; --warn: #FFB200; --bad: #FF5C86;
   --shadow: 0 10px 30px rgba(0, 0, 0, .35);
   --font: "Crimson Text", Georgia, "Times New Roman", serif; --head: "Miriam Libre", "Trebuchet MS", system-ui, sans-serif;
